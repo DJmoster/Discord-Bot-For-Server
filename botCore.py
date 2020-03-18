@@ -2,39 +2,37 @@
 
 import json 
 import discord
+import random
 
-from discord.ext import commands
+from botConfig import BOT_TOKEN
 
 
-
-class bot_main():
-
-    def get_data_from_file(self):
-        with open('bot_data.json', 'r') as F:
-            data = json.load(F)
-            F.close()
-        
-        return data
-
+class bot_Main():
 
     def __init__(self):
-        bot  = commands.Bot(command_prefix='!')
-        data = self.get_data_from_file()
+        self.client = discord.Client()
 
-        @bot.event
-        async def on_ready():
-            print('Logged in as')
-            print(bot.user.name)
-            print(bot.user.id)
-            print('------')
+        @self.client.event
+        async def on_message(message):
+            if message.author == self.client.user:
+                return 0
+            
+            if message.content.startswith('-help'):
 
-        @bot.command(pass_context=True)
-        async def test(ctx):
-            await ctx.send('OK') 
+                embed = discord.Embed(title='Команди бота:', color=0x00FF00)
+                embed.add_field(name='**-roll**', value='Рандомне число від 0 до 100')
 
 
+                await message.channel.send(embed=embed)
 
-        bot.run(data['BOT_TOKEN'])
+            if message.content.startswith('-roll'):
+                await message.channel.send('Число: {0}'.format(str(random.randrange(0,100))))
 
 
-bot_main()
+        self.client.run(BOT_TOKEN)
+
+bot_Main()
+
+
+
+# embed.add_field(name='', value='')
